@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@theme {
+    --color-*: initial;
+    --font-serif: "Quattrocento";
+    --font-sans: "Space Grotesk";
+  }
+
+/* quattrocento-regular - latin */
+@font-face {
+    font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+    font-family: 'Quattrocento';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../fonts/quattrocento-v23-latin-regular.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+  }
+  @font-face {
+    font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+    font-family: 'Space Grotesk';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../fonts/space-grotesk-v21-latin-regular.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+  }
+/* source-sans-3-300 - latin */
+@font-face {
+    font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+    font-family: 'Source Sans 3';
+    font-style: normal;
+    font-weight: 300;
+    src: url('../fonts/source-sans-3-v18-latin-300.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+  }
+  
+@layer base {
+    html{
+        font-family: 'Source Sans 3';
+        @apply bg-[#181118] text-[#D6E1FF] p-4 pt-8
+    }
+    h1{
+        @apply text-[#9EB1FF] text-4xl md:text-6xl lg:text-8xl mb-4 md:mb-8 mr-4 font-sans 
+    }
+    .h1{
+        @apply text-[#5472E4] font-serif
+    }
+    h2{
+        @apply text-2xl text-[#9EB1FF] mb-2 font-sans 
+    }
+    h3{
+        @apply text-xl mb-1
+    }
+    h2, h3, li{
+        @apply  flex items-center gap-2
+    }
+    section{
+        @apply mb-4 md:mb-8 mx-4
+    }
+    li{
+        @apply mb-2
+    }
+    li svg{
+        @apply text-[#9EB1FF]
+    }
+    a svg{
+        @apply text-[#9EB1FF] hover:text-[#D6E1FF] transition-colors duration-300
+    }
+    .link-selection{
+        @apply hover:text-[#5472E4] *:hover:cursor-pointer *:hover:text-[#D6E1FF] transition-colors duration-300
+    }
+}
