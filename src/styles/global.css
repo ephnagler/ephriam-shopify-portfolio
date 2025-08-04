@@ -1,68 +1,110 @@
 @import "tailwindcss";
 
-@theme {
-    --color-*: initial;
-    --font-serif: "Quattrocento";
-    --font-sans: "Space Grotesk";
+:root {
+  --color-bg: #181118;
+  --color-text: #D6E1FF;
+  --color-accent: #5472E4;
+  --color-heading: #9EB1FF;
+  --font-serif: "Quattrocento";
+  --font-sans: "Space Grotesk";
+}
+
+@font-face {
+  font-display: swap;
+  font-family: 'Quattrocento';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/quattrocento-v23-latin-regular.woff2') format('woff2');
+}
+@font-face {
+  font-display: swap;
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/space-grotesk-v21-latin-regular.woff2') format('woff2');
+}
+@font-face {
+  font-display: swap;
+  font-family: 'Source Sans 3';
+  font-style: normal;
+  font-weight: 300;
+  src: url('../fonts/source-sans-3-v18-latin-300.woff2') format('woff2');
+}
+
+@layer base {
+  html {
+    font-family: 'Source Sans 3';
+    background-color: var(--color-bg);
+    color: var(--color-text);
+  }
+  body {
+    @apply mx-2 my-8;
+  }
+  h1 {
+    @apply text-2xl md:text-6xl lg:text-8xl mb-4 md:mb-8 mr-4 font-sans;
+    color: var(--color-heading);
+  }
+  .title {
+    @apply font-serif tracking-tighter;
+    color: var(--color-accent);
+  }
+  h2 {
+    @apply text-xl mb-2 font-sans;
+    color: var(--color-heading);
+  }
+  h3 {
+    @apply text-lg mb-1;
   }
 
-/* quattrocento-regular - latin */
-@font-face {
-    font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
-    font-family: 'Quattrocento';
-    font-style: normal;
-    font-weight: 400;
-    src: url('../fonts/quattrocento-v23-latin-regular.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+  li {
+    @apply mb-2;
   }
-  @font-face {
-    font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
-    font-family: 'Space Grotesk';
-    font-style: normal;
-    font-weight: 400;
-    src: url('../fonts/space-grotesk-v21-latin-regular.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+  svg {
+    color: var(--color-heading);
   }
-/* source-sans-3-300 - latin */
-@font-face {
-    font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
-    font-family: 'Source Sans 3';
-    font-style: normal;
-    font-weight: 300;
-    src: url('../fonts/source-sans-3-v18-latin-300.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+  a svg {
+    @apply transition-colors duration-300;
+    &:hover {
+      color: var(--color-text);
+    }
   }
-  
-@layer base {
-    html{
-        font-family: 'Source Sans 3';
-        @apply bg-[#181118] text-[#D6E1FF] p-4 pt-8
+  .work-container {
+    h1 {
+      @apply md:text-center;
     }
-    h1{
-        @apply text-[#9EB1FF] text-4xl md:text-6xl lg:text-8xl mb-4 md:mb-8 mr-4 font-sans 
+    h2,
+    h3,
+    ul,
+    p {
+      @apply mb-4;
     }
-    .h1{
-        @apply text-[#5472E4] font-serif
+    h2,
+    h3,
+    ul,p:not(:has(img)) {
+      @apply max-w-4xl mx-auto;
     }
-    h2{
-        @apply text-2xl text-[#9EB1FF] mb-2 font-sans 
+    img {
+      @apply rounded-xl w-full my-8 md:my-16;
     }
-    h3{
-        @apply text-xl mb-1
-    }
-    h2, h3, li{
-        @apply  flex items-center gap-2
-    }
-    section{
-        @apply mb-4 md:mb-8 mx-4
-    }
-    li{
-        @apply mb-2
-    }
-    li svg{
-        @apply text-[#9EB1FF]
-    }
-    a svg{
-        @apply text-[#9EB1FF] hover:text-[#D6E1FF] transition-colors duration-300
-    }
-    .link-selection{
-        @apply hover:text-[#5472E4] *:hover:cursor-pointer *:hover:text-[#D6E1FF] transition-colors duration-300
-    }
+  }
+  h2::after {
+    content: "";
+    @apply md:hidden block h-0.5 w-full bg-[var(--color-accent)] my-2;
+  }
+
+  .work-container {
+    --color-heading: #FED2E1;
+    --color-accent: #E54666;
+  }
+
+  .work-container h2 {
+    @apply mt-16;
+  }
+  .work-container h2::after {
+    @apply hidden;
+  }
+  .work-container h2::after {
+    content: "";
+    @apply  block h-0.5 w-full bg-[var(--color-accent)] my-2;
+  }
 }

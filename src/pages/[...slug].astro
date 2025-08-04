@@ -1,0 +1,27 @@
+---
+import { type CollectionEntry, getCollection } from "astro:content";
+import { render } from "astro:content";
+import Layout from "../layouts/Layout.astro";
+import Work from "../components/Work.astro";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("work");
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: post,
+  }));
+}
+type Props = CollectionEntry<"work">;
+
+const post = Astro.props;
+const { Content } = await render(post);
+---
+
+<Layout currentPostTitle={post.data.title}>
+  <div class="work-container mt-4 md:mt-16 md:grid grid-cols-8">
+    <div class="col-start-2 col-span-6">
+      <Content />
+    </div>
+  </div>
+  <Work />
+</Layout>

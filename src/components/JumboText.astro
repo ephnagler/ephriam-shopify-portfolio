@@ -15,6 +15,9 @@ const { text, class: className = "", style = "" } = Astro.props;
 </div>
 
 <script>
+  // Store resize observers in a WeakMap to avoid memory leaks
+  const resizeObservers = new WeakMap<HTMLElement, ResizeObserver>();
+
   function calculateOptimalFontSize(element: HTMLElement) {
     const text = element.dataset.text;
     if (!text || !text.trim()) return;
@@ -79,17 +82,23 @@ const { text, class: className = "", style = "" } = Astro.props;
       ".jumbo-text-element"
     ) as NodeListOf<HTMLElement>;
     elements.forEach((element) => {
-      if (!element.hasAttribute("data-initialized")) {
-        element.setAttribute("data-initialized", "true");
-        calculateOptimalFontSize(element);
+      // Remove existing resize observers if any
+      const existingObserver = resizeObservers.get(element);
+      if (existingObserver) {
+        existingObserver.disconnect();
+        resizeObservers.delete(element);
+      }
 
-        // Set up resize observer
-        if (window.ResizeObserver) {
-          const resizeObserver = new ResizeObserver(() => {
-            calculateOptimalFontSize(element);
-          });
-          resizeObserver.observe(element.parentElement!);
-        }
+      // Always recalculate font size for view transitions
+      calculateOptimalFontSize(element);
+
+      // Set up resize observer
+      if (window.ResizeObserver) {
+        const resizeObserver = new ResizeObserver(() => {
+          calculateOptimalFontSize(element);
+        });
+        resizeObserver.observe(element.parentElement!);
+        resizeObservers.set(element, resizeObserver);
       }
     });
   }
@@ -100,6 +109,10 @@ const { text, class: className = "", style = "" } = Astro.props;
   } else {
     initJumboText();
   }
+
+  // Handle Astro view transitions
+  document.addEventListener("astro:page-load", initJumboText);
+  document.addEventListener("astro:after-swap", initJumboText);
 
   // Also initialize for dynamically added content
   if (typeof window !== "undefined") {
@@ -120,7 +133,7 @@ const { text, class: className = "", style = "" } = Astro.props;
     font-family: inherit;
     color: inherit;
     font-weight: inherit;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.04em;
     line-height: 1;
     text-align: center;
     white-space: nowrap;
