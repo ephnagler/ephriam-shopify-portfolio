@@ -43,7 +43,7 @@
   }
 
   body {
-    @apply  mx-2 my-8;
+    @apply py-8 min-h-screen flex flex-col justify-between;
     /* Prevent horizontal scroll on mobile */
     overflow-x: hidden;
     /* Ensure smooth scrolling */
