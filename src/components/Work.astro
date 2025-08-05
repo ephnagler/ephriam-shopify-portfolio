@@ -225,7 +225,7 @@ const isHomePage = Astro.url.pathname === "/";
   });
 
   // Work menu animation system
-  function animateWorkMenu() {
+  function setupWorkAnimations() {
     const workItems = document.querySelectorAll(".work-item");
     const viewportHeight = window.innerHeight;
 
@@ -240,14 +240,12 @@ const isHomePage = Astro.url.pathname === "/";
           htmlItem.classList.add("animate-visible");
         }, index * 100); // Stagger by 100ms
       } else {
-        // Element is not in viewport - set up for intersection observer
+        // Element is not in viewport - set up for scroll animation
         htmlItem.dataset.animationType = "content";
       }
     });
-  }
 
-  // Set up intersection observer for work items not in initial viewport
-  function setupWorkObserver() {
+    // Set up dedicated observer for work items not in initial viewport
     const observerOptions = {
       threshold: 0.3,
       rootMargin: "0px 0px -50px 0px",
@@ -257,38 +255,57 @@ const isHomePage = Astro.url.pathname === "/";
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           const element = entry.target;
-          element.classList.add("animate-visible");
+          // Find the index of this element among all work items
+          const allWorkItems = document.querySelectorAll(".work-item");
+          const index = Array.from(allWorkItems).indexOf(element);
+
+          // Stagger the animation based on index
+          setTimeout(() => {
+            element.classList.add("animate-visible");
+          }, index * 100);
+
           workObserver.unobserve(element);
         }
       });
     }, observerOptions);
 
-    // Observe work items that need animation
-    const workItems = document.querySelectorAll(".work-item");
+    // Observe work items that need scroll animation
     workItems.forEach((item) => {
-      const htmlItem = item;
-      const rect = htmlItem.getBoundingClientRect();
-      const viewportHeight = window.innerHeight;
+      const rect = item.getBoundingClientRect();
       const isInViewport = rect.top < viewportHeight && rect.bottom > 0;
 
       // Only observe elements not in initial viewport
       if (!isInViewport) {
-        workObserver.observe(htmlItem);
+        workObserver.observe(item);
       }
     });
+
+    // Safety check: if items are in viewport but not animated after 1 second, force animate them
+    setTimeout(() => {
+      const unanimatedItems = document.querySelectorAll(
+        ".work-item:not(.animate-visible)"
+      );
+      const viewportHeight = window.innerHeight;
+
+      unanimatedItems.forEach((item, index) => {
+        const rect = item.getBoundingClientRect();
+        const isInViewport = rect.top < viewportHeight && rect.bottom > 0;
+
+        // Only force animate if the item is actually in the viewport
+        if (isInViewport) {
+          setTimeout(() => {
+            item.classList.add("animate-visible");
+          }, index * 100);
+        }
+      });
+    }, 1000);
   }
 
   // Handle work menu animations
   document.addEventListener("astro:page-load", () => {
-    setTimeout(() => {
-      animateWorkMenu();
-      setupWorkObserver();
-    }, 200); // Small delay to ensure DOM is ready
+    setTimeout(setupWorkAnimations, 200); // Small delay to ensure DOM is ready
   });
 
   // Initial page load
-  setTimeout(() => {
-    animateWorkMenu();
-    setupWorkObserver();
-  }, 100);
+  setTimeout(setupWorkAnimations, 100);
 </script>

@@ -65,9 +65,7 @@ if (import.meta.env.PUBLIC_POSTHOG_API_KEY && !import.meta.env.DEV) {
 
     <!-- Unified animation system -->
     <script>
-      // Cached selectors for performance
-      let animationObserver: IntersectionObserver | null = null;
-      let cachedElements = new Map();
+      let animationObserver = null;
 
       // Unified intersection observer for all animations
       function setupUnifiedAnimations() {
@@ -84,7 +82,7 @@ if (import.meta.env.PUBLIC_POSTHOG_API_KEY && !import.meta.env.DEV) {
         animationObserver = new IntersectionObserver((entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
-              const element = entry.target as HTMLElement;
+              const element = entry.target;
               const animationType = element.dataset.animationType;
 
               if (animationType === "line") {
