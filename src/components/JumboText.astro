@@ -24,6 +24,11 @@ const { text, class: className = "", style = "" } = Astro.props;
   // Store resize observers in a WeakMap to avoid memory leaks
   const resizeObservers = new WeakMap<HTMLElement, ResizeObserver>();
 
+  // State to track if this is the initial page load
+  let isInitialLoad = true;
+  let hasAnimatedOnMobile = false;
+  let isAnimating = false;
+
   function calculateOptimalFontSize(element: HTMLElement) {
     const text = element.dataset.text;
     if (!text || !text.trim()) return;
@@ -148,13 +153,38 @@ const { text, class: className = "", style = "" } = Astro.props;
 
   // Trigger character animations
   function triggerCharAnimation() {
-    // Only animate on medium screens and larger
-    if (window.innerWidth < 768) return;
+    if (isAnimating) return; // Prevent multiple simultaneous animations
 
     const chars = document.querySelectorAll(".jumbo-char");
+    const isMobile = window.innerWidth < 768;
+
+    // On mobile, only animate on initial page load
+    if (isMobile && hasAnimatedOnMobile) {
+      // Reset animation state for mobile - show immediately
+      chars.forEach((char) => {
+        (char as HTMLElement).style.animationDelay = "0s";
+        (char as HTMLElement).style.opacity = "1";
+        (char as HTMLElement).style.transform = "translateX(0)";
+      });
+      return;
+    }
+
+    isAnimating = true;
+
     chars.forEach((char, index) => {
-      (char as HTMLElement).style.animationDelay = `${index * 0.035}s`;
+      const delay = isMobile ? index * 0.08 : index * 0.035;
+      (char as HTMLElement).style.animationDelay = `${delay}s`;
     });
+
+    // Mark mobile as animated after first time
+    if (isMobile) {
+      hasAnimatedOnMobile = true;
+    }
+
+    // Reset animation flag after animation completes
+    setTimeout(() => {
+      isAnimating = false;
+    }, 2000); // Wait for animation to complete
   }
 
   // Trigger on page load and view transitions
@@ -163,7 +193,8 @@ const { text, class: className = "", style = "" } = Astro.props;
     triggerCharAnimation();
   });
 
-  setTimeout(triggerCharAnimation, 100); // Initial load
+  // Initial load trigger
+  setTimeout(triggerCharAnimation, 100);
 </script>
 
 <style>
@@ -190,12 +221,13 @@ const { text, class: className = "", style = "" } = Astro.props;
 
   .jumbo-char {
     display: inline-block;
-    opacity: 1;
-    transform: translateX(0);
-    scale: 1;
+    opacity: 0;
+    transform: translate3d(-5px, 0px, 0px);
+    animation: charFadeIn 0.8s ease-out forwards;
+    will-change: opacity, transform;
   }
 
-  /* Only animate on medium screens and larger */
+  /* Enhanced animation on medium screens and larger */
   @media (min-width: 768px) {
     .jumbo-char {
       opacity: 0;
