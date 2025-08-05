@@ -114,6 +114,7 @@ const isHomePage = Astro.url.pathname === "/";
     img.className =
       "w-[90vw] lg:w-[75vw] xl:w-[60vw] h-auto rounded-xl work-hover-image absolute opacity-0 transition-all duration-300 saturate-20 brightness-75 shadow-none";
     img.setAttribute("data-post-id", postId);
+    img.loading = "lazy"; // Add lazy loading attribute
 
     hoverContainer.appendChild(img);
     hoverImages.push(img);

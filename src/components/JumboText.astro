@@ -86,6 +86,7 @@ const { text, class: className = "", style = "" } = Astro.props;
   // Debounced resize function with better performance
   let resizeTimeout;
   let lastWidth = 0;
+
   function debouncedResize(element) {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
@@ -96,6 +97,11 @@ const { text, class: className = "", style = "" } = Astro.props;
         calculateOptimalFontSize(element);
       }
     }, 150); // Slightly longer delay for better performance
+  }
+
+  // Cleanup function for timeouts
+  function cleanupTimeouts() {
+    clearTimeout(resizeTimeout);
   }
 
   function initJumboText() {
@@ -152,7 +158,11 @@ const { text, class: className = "", style = "" } = Astro.props;
   }
 
   // Trigger on page load and view transitions
-  document.addEventListener("astro:page-load", triggerCharAnimation);
+  document.addEventListener("astro:page-load", () => {
+    cleanupTimeouts();
+    triggerCharAnimation();
+  });
+
   setTimeout(triggerCharAnimation, 100); // Initial load
 </script>
 

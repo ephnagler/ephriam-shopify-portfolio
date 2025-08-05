@@ -140,6 +140,7 @@
     transition: opacity 0.5s ease-out, transform 0.5s ease-out;
     will-change: opacity, transform;
     backface-visibility: hidden;
+    contain: layout style paint;
   }
 
   .work-container h2.animate-visible,
@@ -183,6 +184,7 @@
     transition: opacity 0.5s ease-out, transform 0.5s ease-out;
     will-change: opacity, transform;
     backface-visibility: hidden;
+    contain: layout style paint;
   }
 
   .work-item.animate-visible {
