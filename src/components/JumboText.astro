@@ -83,13 +83,19 @@ const { text, class: className = "", style = "" } = Astro.props;
     return element.scrollWidth > containerWidth;
   }
 
-  // Debounced resize function
+  // Debounced resize function with better performance
   let resizeTimeout;
+  let lastWidth = 0;
   function debouncedResize(element) {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
-      calculateOptimalFontSize(element);
-    }, 100);
+      const currentWidth = element.parentElement?.offsetWidth || 0;
+      // Only recalculate if width actually changed significantly
+      if (Math.abs(currentWidth - lastWidth) > 10) {
+        lastWidth = currentWidth;
+        calculateOptimalFontSize(element);
+      }
+    }, 150); // Slightly longer delay for better performance
   }
 
   function initJumboText() {

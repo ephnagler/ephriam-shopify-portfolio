@@ -255,7 +255,7 @@ const isHomePage = Astro.url.pathname === "/";
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           const element = entry.target;
-          // Find the index of this element among all work items
+          // Cache work items array for better performance
           const allWorkItems = document.querySelectorAll(".work-item");
           const index = Array.from(allWorkItems).indexOf(element);
 
@@ -269,8 +269,9 @@ const isHomePage = Astro.url.pathname === "/";
       });
     }, observerOptions);
 
-    // Observe work items that need scroll animation
-    workItems.forEach((item) => {
+    // Observe work items that need scroll animation (optimized loop)
+    for (let i = 0; i < workItems.length; i++) {
+      const item = workItems[i];
       const rect = item.getBoundingClientRect();
       const isInViewport = rect.top < viewportHeight && rect.bottom > 0;
 
@@ -278,7 +279,7 @@ const isHomePage = Astro.url.pathname === "/";
       if (!isInViewport) {
         workObserver.observe(item);
       }
-    });
+    }
 
     // Safety check: if items are in viewport but not animated after 1 second, force animate them
     setTimeout(() => {

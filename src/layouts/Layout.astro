@@ -97,13 +97,14 @@ if (import.meta.env.PUBLIC_POSTHOG_API_KEY && !import.meta.env.DEV) {
           });
         }, observerOptions);
 
-        // Observe elements with animation data attributes
+        // Cache selector and observe elements with animation data attributes
         const animatedElements = document.querySelectorAll(
           "[data-animation-type]"
         );
-        animatedElements.forEach((element) => {
-          animationObserver?.observe(element);
-        });
+        // Use forEach with early return for better performance
+        for (let i = 0; i < animatedElements.length; i++) {
+          animationObserver?.observe(animatedElements[i]);
+        }
       }
 
       // Setup on page load and view transitions
