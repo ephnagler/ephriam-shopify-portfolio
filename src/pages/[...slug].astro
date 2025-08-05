@@ -3,6 +3,7 @@ import { type CollectionEntry, getCollection } from "astro:content";
 import { render } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 import Work from "../components/Work.astro";
+import { Image } from "astro:assets";
 
 export async function getStaticPaths() {
   const posts = await getCollection("work");
@@ -18,10 +19,143 @@ const { Content } = await render(post);
 ---
 
 <Layout currentPostTitle={post.data.title}>
-  <div class="work-container mt-4 md:mt-16 md:grid grid-cols-8">
-    <div class="col-start-2 col-span-6">
-      <Content />
+  <div class="work-container">
+    <h1
+      id="post-title"
+      class="opacity-0 translate-y-8 transition-all duration-700 ease-out"
+      data-animation-type="line"
+    >
+      {post.data.title}
+    </h1>
+    <div class="md:grid grid-cols-8">
+      <div class="col-start-2 col-span-6">
+        <Image
+          id="post-image"
+          src={post.data.image}
+          alt={post.data.title}
+          class="opacity-0 translate-y-8 transition-all duration-700 ease-out"
+        />
+        <div id="post-content">
+          <Content />
+        </div>
+      </div>
     </div>
   </div>
   <Work />
+
+  <script>
+    function animatePostElements() {
+      const elements = [
+        { id: "post-title", delay: 200 },
+        { id: "post-image", delay: 400 },
+      ];
+
+      elements.forEach(({ id, delay }) => {
+        setTimeout(() => {
+          const element = document.getElementById(id);
+          if (element) {
+            element.classList.remove("opacity-0", "translate-y-8");
+            element.classList.add("opacity-100", "translate-y-0");
+
+            // If this is the post title (h1), trigger line animation
+            if (id === "post-title") {
+              element.classList.add("animate-line");
+            }
+          }
+        }, delay);
+      });
+    }
+
+    // Animate content elements within the post
+    function animateContentElements() {
+      const contentElement = document.getElementById("post-content");
+      if (!contentElement) return;
+
+      const contentElements =
+        contentElement.querySelectorAll("h2, h3, ul, p, img");
+      const viewportHeight = window.innerHeight;
+
+      contentElements.forEach((element, index) => {
+        const htmlElement = element as HTMLElement;
+        const rect = htmlElement.getBoundingClientRect();
+        const isInViewport = rect.top < viewportHeight && rect.bottom > 0;
+
+        if (isInViewport) {
+          // Element is in viewport - stagger animate it
+          setTimeout(() => {
+            htmlElement.classList.add("animate-visible");
+
+            // If this is an h2 element, trigger line animation immediately
+            if (htmlElement.tagName === "H2") {
+              htmlElement.classList.add("animate-line");
+            }
+          }, index * 150); // Start after image, then stagger by 150ms
+        } else {
+          // Element is not in viewport - set up for intersection observer
+          htmlElement.dataset.animationType = "content";
+        }
+      });
+    }
+
+    // Set up intersection observer for content elements not in initial viewport
+    function setupContentObserver() {
+      const observerOptions = {
+        threshold: 0.3,
+        rootMargin: "0px 0px -50px 0px",
+      };
+
+      const contentObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const element = entry.target as HTMLElement;
+            element.classList.add("animate-visible");
+
+            // If this is an h2 element, trigger line animation immediately
+            if (element.tagName === "H2") {
+              element.classList.add("animate-line");
+            }
+
+            // Unobserve after animation
+            contentObserver.unobserve(element);
+          }
+        });
+      }, observerOptions);
+
+      // Observe elements that need animation
+      const contentElement = document.getElementById("post-content");
+      if (!contentElement) return;
+
+      const contentElements =
+        contentElement.querySelectorAll("h2, h3, ul, p, img");
+      contentElements.forEach((element) => {
+        const htmlElement = element as HTMLElement;
+        const rect = htmlElement.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        const isInViewport = rect.top < viewportHeight && rect.bottom > 0;
+
+        // Only observe elements not in initial viewport
+        if (!isInViewport) {
+          contentObserver.observe(htmlElement);
+        }
+      });
+    }
+
+    // Handle page load and view transitions
+    document.addEventListener("astro:page-load", () => {
+      animatePostElements();
+      setTimeout(() => {
+        animateContentElements();
+        setupContentObserver(); // Set up observer for elements not in viewport
+      }, 600);
+    });
+
+    // Initial page load
+    setTimeout(() => {
+      animatePostElements();
+      setTimeout(() => {
+        animateContentElements();
+        setupContentObserver(); // Set up observer for elements not in viewport
+      }, 600);
+    }, 100);
+  </script>
 </Layout>
