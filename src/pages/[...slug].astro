@@ -76,7 +76,7 @@ const { Content } = await render(post);
       const viewportHeight = window.innerHeight;
 
       contentElements.forEach((element, index) => {
-        const htmlElement = element as HTMLElement;
+        const htmlElement = element;
         const rect = htmlElement.getBoundingClientRect();
         const isInViewport = rect.top < viewportHeight && rect.bottom > 0;
 
@@ -107,7 +107,7 @@ const { Content } = await render(post);
       const contentObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const element = entry.target as HTMLElement;
+            const element = entry.target;
             element.classList.add("animate-visible");
 
             // If this is an h2 element, trigger line animation immediately
@@ -128,7 +128,7 @@ const { Content } = await render(post);
       const contentElements =
         contentElement.querySelectorAll("h2, h3, ul, p, img");
       contentElements.forEach((element) => {
-        const htmlElement = element as HTMLElement;
+        const htmlElement = element;
         const rect = htmlElement.getBoundingClientRect();
         const viewportHeight = window.innerHeight;
         const isInViewport = rect.top < viewportHeight && rect.bottom > 0;

@@ -3,30 +3,6 @@ import JumboText from "../components/JumboText.astro";
 import Connect from "../components/Connect.astro";
 import "../styles/global.css";
 import { ClientRouter } from "astro:transitions";
-
-import posthog from "posthog-js";
-
-// Only initialize PostHog if API key is available and not in development
-if (import.meta.env.PUBLIC_POSTHOG_API_KEY && !import.meta.env.DEV) {
-  posthog.init(import.meta.env.PUBLIC_POSTHOG_API_KEY, {
-    api_host: import.meta.env.PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com",
-    defaults: "2025-05-24",
-    // Enable autocapture for better event tracking
-    autocapture: true,
-    // Enable session recording
-    session_recording: {
-      recordCrossOriginIframes: false,
-    },
-    // Enable feature flags
-    advanced_disable_decide: false,
-    // Enable surveys (available in newer versions)
-    // surveys: true,
-    // Enable error tracking
-    capture_exceptions: true,
-    // Enable web vitals tracking (available in newer versions)
-    // web_vitals: true,
-  });
-}
 ---
 
 <html lang="en">
@@ -45,6 +21,27 @@ if (import.meta.env.PUBLIC_POSTHOG_API_KEY && !import.meta.env.DEV) {
 
     <!-- PostHog tracking script for Astro view transitions -->
     <script>
+      // Initialize PostHog if API key is available and not in development
+      if (
+        typeof window !== "undefined" &&
+        import.meta.env.PUBLIC_POSTHOG_API_KEY &&
+        !import.meta.env.DEV
+      ) {
+        import("posthog-js").then((posthog) => {
+          posthog.default.init(import.meta.env.PUBLIC_POSTHOG_API_KEY, {
+            api_host:
+              import.meta.env.PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com",
+            defaults: "2025-05-24",
+            autocapture: true,
+            session_recording: {
+              recordCrossOriginIframes: false,
+            },
+            advanced_disable_decide: false,
+            capture_exceptions: true,
+          });
+        });
+      }
+
       // Wait for PostHog to be ready
       function trackPageView() {
         if (typeof window !== "undefined" && (window as any).posthog) {
@@ -60,7 +57,9 @@ if (import.meta.env.PUBLIC_POSTHOG_API_KEY && !import.meta.env.DEV) {
       document.addEventListener("astro:page-load", trackPageView);
 
       // Track initial page load (with a small delay to ensure PostHog is ready)
-      setTimeout(trackPageView, 100);
+      if (typeof window !== "undefined") {
+        setTimeout(trackPageView, 100);
+      }
     </script>
 
     <!-- Unified animation system -->
@@ -83,7 +82,7 @@ if (import.meta.env.PUBLIC_POSTHOG_API_KEY && !import.meta.env.DEV) {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
               const element = entry.target;
-              const animationType = element.dataset.animationType;
+              const animationType = element.dataset?.animationType;
 
               if (animationType === "line") {
                 element.classList.add("animate-line");
