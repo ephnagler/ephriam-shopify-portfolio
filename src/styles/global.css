@@ -155,7 +155,7 @@
     @apply max-w-4xl mx-auto;
   }
   .work-container li {
-    @apply mb-2 list-disc marker:text-[var(--color-accent)] mx-8;
+    @apply mb-2 list-disc marker:text-[var(--color-accent)] ml-4 md:mx-8;
   }
   .work-container img {
     @apply max-w-4xl mx-auto rounded-xl w-full mb-8 md:mb-16;

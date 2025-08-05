@@ -30,7 +30,7 @@ const isHomePage = Astro.url.pathname === "/";
           {workSorted
             .filter((post) => post.data.published)
             .map((post) => (
-              <li class="group">
+              <li class="group work-item">
                 <h3>
                   <a
                     href={`/${post.id}`}
@@ -65,7 +65,7 @@ const isHomePage = Astro.url.pathname === "/";
                 `/${post.id}` !== Astro.url.pathname.replace(/\/$/, "")
             )
             .map((post) => (
-              <li class="group">
+              <li class="group work-item">
                 <h3>
                   <a
                     href={`/${post.id}`}
@@ -223,4 +223,72 @@ const isHomePage = Astro.url.pathname === "/";
       attachHoverListeners();
     }
   });
+
+  // Work menu animation system
+  function animateWorkMenu() {
+    const workItems = document.querySelectorAll(".work-item");
+    const viewportHeight = window.innerHeight;
+
+    workItems.forEach((item, index) => {
+      const htmlItem = item;
+      const rect = htmlItem.getBoundingClientRect();
+      const isInViewport = rect.top < viewportHeight && rect.bottom > 0;
+
+      if (isInViewport) {
+        // Element is in viewport - stagger animate it
+        setTimeout(() => {
+          htmlItem.classList.add("animate-visible");
+        }, index * 100); // Stagger by 100ms
+      } else {
+        // Element is not in viewport - set up for intersection observer
+        htmlItem.dataset.animationType = "content";
+      }
+    });
+  }
+
+  // Set up intersection observer for work items not in initial viewport
+  function setupWorkObserver() {
+    const observerOptions = {
+      threshold: 0.3,
+      rootMargin: "0px 0px -50px 0px",
+    };
+
+    const workObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const element = entry.target;
+          element.classList.add("animate-visible");
+          workObserver.unobserve(element);
+        }
+      });
+    }, observerOptions);
+
+    // Observe work items that need animation
+    const workItems = document.querySelectorAll(".work-item");
+    workItems.forEach((item) => {
+      const htmlItem = item;
+      const rect = htmlItem.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+      const isInViewport = rect.top < viewportHeight && rect.bottom > 0;
+
+      // Only observe elements not in initial viewport
+      if (!isInViewport) {
+        workObserver.observe(htmlItem);
+      }
+    });
+  }
+
+  // Handle work menu animations
+  document.addEventListener("astro:page-load", () => {
+    setTimeout(() => {
+      animateWorkMenu();
+      setupWorkObserver();
+    }, 200); // Small delay to ensure DOM is ready
+  });
+
+  // Initial page load
+  setTimeout(() => {
+    animateWorkMenu();
+    setupWorkObserver();
+  }, 100);
 </script>
