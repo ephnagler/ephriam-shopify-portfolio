@@ -2,7 +2,6 @@
 import { type CollectionEntry, getCollection } from "astro:content";
 import { render } from "astro:content";
 import Layout from "../layouts/Layout.astro";
-import Work from "../components/Work.astro";
 import { Image } from "astro:assets";
 
 export async function getStaticPaths() {
@@ -41,7 +40,6 @@ const { Content } = await render(post);
       </div>
     </div>
   </div>
-  <Work />
 
   <script>
     function animatePostElements() {

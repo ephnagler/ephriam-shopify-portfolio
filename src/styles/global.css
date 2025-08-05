@@ -38,10 +38,16 @@
     font-family: 'Source Sans 3';
     background-color: var(--color-bg);
     color: var(--color-text);
+    /* Prevent layout shift from scrollbar */
+    overflow-y: scroll;
   }
 
   body {
-    @apply mx-2 my-8;
+    @apply  mx-2 my-8;
+    /* Prevent horizontal scroll on mobile */
+    overflow-x: hidden;
+    /* Ensure smooth scrolling */
+    scroll-behavior: smooth;
   }
 
   .title {
@@ -190,5 +196,19 @@
   .work-item.animate-visible {
     --opacity: 1;
     --translate-y: 0;
+  }
+
+  /* Mobile scroll improvements */
+  @media (max-width: 767px) {
+    /* Prevent momentum scrolling issues on iOS */
+    body {
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Ensure proper viewport behavior */
+    html {
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    }
   }
 }
