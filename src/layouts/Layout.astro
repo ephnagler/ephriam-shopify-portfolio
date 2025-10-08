@@ -32,6 +32,7 @@ import { ClientRouter } from "astro:transitions";
           posthog.default.init(import.meta.env.PUBLIC_POSTHOG_API_KEY, {
             api_host:
               import.meta.env.PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com",
+            ui_host: "https://us.posthog.com",
             defaults: "2025-05-24",
             autocapture: true,
             session_recording: {
