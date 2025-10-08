@@ -1,6 +1,15 @@
 @import "tailwindcss";
 
 @layer base {
+
+  @font-face {
+    font-display: swap;
+    font-family: 'Sophillia';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../fonts/sophillia-webfont.woff2') format('woff2');
+  }
+
   @font-face {
     font-display: swap;
     font-family: 'Quattrocento';
@@ -30,7 +39,7 @@
     --color-text: #B6ECF7;
     --color-heading: #23AFD0;
     --color-accent: #11809C;
-    --font-serif: "Quattrocento";
+    --font-serif: "Sophillia";
     --font-sans: "Space Grotesk";
   }
 
@@ -43,7 +52,7 @@
   }
 
   body {
-    @apply py-8 min-h-screen flex flex-col justify-between;
+    @apply min-h-screen flex flex-col justify-between;
     /* Prevent horizontal scroll on mobile */
     overflow-x: hidden;
     /* Ensure smooth scrolling */
@@ -53,10 +62,14 @@
   .title {
     @apply font-serif tracking-tighter;
     color: var(--color-accent);
+    font-variant-ligatures: common-ligatures discretionary-ligatures contextual;
+    -webkit-font-feature-settings: "liga" 1, "dlig" 1, "calt" 1, "clig" 1;
+    font-feature-settings: "liga" 1, "dlig" 1, "calt" 1, "clig" 1;
+    text-rendering: optimizeLegibility;
   }
 
   h1 {
-    @apply text-2xl md:text-4xl xl:text-6xl mb-4 md:mb-8 font-sans;
+    @apply text-2xl md:text-5xl xl:text-6xl mb-4 md:mb-8 font-sans;
     color: var(--color-heading);
   }
 
@@ -67,7 +80,7 @@
 
   h2::after {
     content: "";
-    @apply md:hidden block h-0.5 w-full bg-[var(--color-accent)] my-2 origin-left scale-x-0 transition-transform duration-800 ease-out;
+    @apply block h-0.5 w-full mb-3 bg-[var(--color-accent)] my-2 origin-left scale-x-0 transition-transform duration-800 ease-out;
   }
 
   h2.animate-line::after {
@@ -76,6 +89,10 @@
 
   h3 {
     @apply text-lg mb-1 font-sans;
+  }
+
+  h4 {
+    @apply mb-1 font-sans;
   }
 
   svg {
@@ -91,7 +108,7 @@
 
   /* Connect Component */
   .connect-container {
-    @apply flex gap-4 md:gap-0 w-full md:w-auto mt-4 md:mt-0 justify-center md:fixed top-4 right-0 items-center md:pr-4 *:hover:-translate-y-0.5 *:transition-transform *:duration-300 *:p-1;
+    @apply flex gap-4 md:gap-2 w-full md:w-auto mt-4 md:mt-0 justify-center md:justify-normal items-center md:pr-4 *:hover:-translate-y-0.5 *:transition-transform *:duration-300 *:p-2 md:-translate-x-1;
   }
 
   .connect-container li {
@@ -103,9 +120,13 @@
   }
 
   .connect-container a {
-    @apply inset-0 absolute;
+    @apply md:absolute inset-0;
   }
 
+  #connect-line {
+    content: "";
+    @apply block h-0.5 w-full bg-[var(--color-accent)]/50 my-2;
+  }
   /* Work Page */
   .work-container {
     --color-text: #E8E2D9;
@@ -113,12 +134,12 @@
     --color-accent: #978365;
   }
   .work-container h1 {
-    @apply md:text-center mt-4 md:mt-16;
+    @apply lg:text-center mt-4 md:mt-16;
   }
   .work-container h1::after {
     @apply hidden;
     content: "";
-    @apply block h-1 w-full max-w-2xl xl:max-w-5xl md:w-[70%] mx-auto bg-[var(--color-accent)] my-2 md:mt-8 origin-left scale-x-0 transition-transform duration-800 ease-out;
+    @apply block h-1 w-full xl:max-w-5xl lg:w-[70%] mx-auto bg-[var(--color-accent)] my-2 lg:mt-8 origin-left scale-x-0 transition-transform duration-800 ease-out;
   }
   .work-container h1.animate-line::after {
     @apply scale-x-100;
@@ -138,7 +159,7 @@
   .work-container h3,
   .work-container ul,
   .work-container p {
-    @apply mb-4 text-[var(--color-text)];
+    @apply my-4 text-[var(--color-text)];
     --opacity: 0;
     --translate-y: 2rem;
     opacity: var(--opacity);
@@ -160,13 +181,13 @@
   .work-container h3,
   .work-container ul,
   .work-container p:not(:has(img)) {
-    @apply max-w-4xl mx-auto;
+    @apply max-w-5xl mx-auto;
   }
   .work-container li {
     @apply mb-2 list-disc marker:text-[var(--color-accent)] ml-4 md:mx-8;
   }
   .work-container img {
-    @apply max-w-4xl mx-auto rounded-xl w-full mb-8 md:mb-16;
+    @apply max-w-5xl mx-auto rounded-xl w-full mb-8;
     --opacity: 0;
     --translate-y: 2rem;
     opacity: var(--opacity);

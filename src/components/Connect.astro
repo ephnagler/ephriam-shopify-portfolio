@@ -1,26 +1,11 @@
 ---
-import { EnvelopeIcon } from "@heroicons/react/16/solid";
-import { GitHubLogoIcon, LinkedInLogoIcon } from "@radix-ui/react-icons";
+import { EnvelopeClosedIcon, EnvelopeOpenIcon } from "@radix-ui/react-icons";
 ---
 
-<div>
-  <h2 class="md:hidden" data-animation-type="line">Connect</h2>
-  <ul class="connect-container">
-    <!-- <li class="group">
-      <EnvelopeIcon className="w-[16px]" />
-      <span class="md:hidden">email</span><a
-        href="mailto:hello@ephriamnagler.com"
-        class=""></a>
-    </li> -->
-    <li class="group">
-      <GitHubLogoIcon />
-      <span class="md:hidden">github</span>
-      <a href="https://github.com/ephnagler" class=""></a>
-    </li>
-    <li class="group">
-      <LinkedInLogoIcon />
-      <span class="md:hidden">linkedin</span>
-      <a href="https://www.linkedin.com/in/ephriam-nagler/"></a>
-    </li>
-  </ul>
-</div>
+<a
+  href="/connect"
+  class="hidden lg:flex bg-[var(--color-accent)]/10 rounded-xl px-4 py-2 outline-1 outline-[var(--color-accent)]/50 hover:outline-[var(--color-text)] transition-colors duration-300 items-center gap-2 group"
+  ><EnvelopeClosedIcon
+    className="group-hover:text-[var(--color-text)] transition-colors duration-300"
+  /> Connect</a
+>

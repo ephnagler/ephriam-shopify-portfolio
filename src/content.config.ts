@@ -7,9 +7,11 @@ const work = defineCollection({
   }),
   schema: ({image}) => z.object({
     title: z.string(),
+    subtitle: z.string().optional(),
+    icon: z.string().optional(),
     date: z.string(),
     published: z.boolean().default(false),
-    image: image(),
+    image: image().optional(),
     skills: z.array(z.string()).default([]),
   }),
 });

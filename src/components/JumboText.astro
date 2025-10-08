@@ -6,14 +6,44 @@ export interface Props {
 }
 
 const { text, class: className = "", style = "" } = Astro.props;
+
+function groupTextForLigatures(input: string): string[] {
+  const groups: string[] = [];
+  for (let i = 0; i < input.length; i++) {
+    const current = input[i];
+    const next = input[i + 1] ?? "";
+    // Preserve spaces as individual tokens; will render as nbsp later
+    if (current === " ") {
+      groups.push(current);
+      continue;
+    }
+    // Keep "ph" together (case-insensitive) to preserve ligature in Sophillia
+    if (
+      (current === "p" || current === "P") &&
+      (next === "h" || next === "H")
+    ) {
+      groups.push(current + next);
+      i++; // Skip the next character since it's grouped
+      continue;
+    }
+    groups.push(current);
+  }
+  return groups;
+}
+
+const groupedText = groupTextForLigatures(text);
 ---
 
 <div class={`jumbo-text-container ${className}`} style={style}>
   <div class="jumbo-text-element" data-text={text}>
     {
-      text.split("").map((char, index) => (
-        <span class="jumbo-char" style={`animation-delay: ${index * 0.1}s`}>
-          {char === " " ? "\u00A0" : char}
+      groupedText.map((unit, index) => (
+        <span
+          class="jumbo-char"
+          data-unit={unit.toLowerCase()}
+          style={`animation-delay: ${index * 0.1}s`}
+        >
+          {unit === " " ? "\u00A0" : unit}
         </span>
       ))
     }
@@ -89,10 +119,10 @@ const { text, class: className = "", style = "" } = Astro.props;
   }
 
   // Debounced resize function with better performance
-  let resizeTimeout;
+  let resizeTimeout: ReturnType<typeof setTimeout> | undefined;
   let lastWidth = 0;
 
-  function debouncedResize(element) {
+  function debouncedResize(element: HTMLElement) {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
       const currentWidth = element.parentElement?.offsetWidth || 0;
@@ -244,5 +274,10 @@ const { text, class: className = "", style = "" } = Astro.props;
       transform: translateX(0);
       scale: 1;
     }
+  }
+
+  /* Fine-tune baseline for specific ligature units */
+  .jumbo-char[data-unit="ph"] {
+    vertical-align: 1px;
   }
 </style>

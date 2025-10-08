@@ -24,17 +24,22 @@ const { Content } = await render(post);
       class="opacity-0 translate-y-8 transition-all duration-700 ease-out"
       data-animation-type="line"
     >
-      {post.data.title}
+      {post.data.subtitle ? post.data.subtitle : post.data.title}
     </h1>
-    <div class="md:grid grid-cols-8">
+    <div class="lg:grid grid-cols-8">
       <div class="col-start-2 col-span-6">
-        <Image
-          id="post-image"
-          src={post.data.image}
-          alt={post.data.title}
-          class="opacity-0 translate-y-8 transition-all duration-700 ease-out"
-        />
-        <div id="post-content">
+        {
+          post.data.image && (
+            <Image
+              id="post-image"
+              src={post.data.image}
+              alt={post.data.title}
+              class="opacity-0 transition-all duration-700 ease-out mt-0"
+              style="transform: translateY(2rem);"
+            />
+          )
+        }
+        <div id="post-content" class="lg:pb-32">
           <Content />
         </div>
       </div>
@@ -52,8 +57,16 @@ const { Content } = await render(post);
         setTimeout(() => {
           const element = document.getElementById(id);
           if (element) {
-            element.classList.remove("opacity-0", "translate-y-8");
-            element.classList.add("opacity-100", "translate-y-0");
+            element.classList.remove("opacity-0");
+            element.classList.add("opacity-100");
+
+            // Handle transform for image, translate-y for title
+            if (id === "post-image") {
+              element.style.transform = "translateY(0)";
+            } else {
+              element.classList.remove("translate-y-8");
+              element.classList.add("translate-y-0");
+            }
 
             // If this is the post title (h1), trigger line animation
             if (id === "post-title") {

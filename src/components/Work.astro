@@ -1,8 +1,13 @@
 ---
-import { ArrowUturnLeftIcon } from "@heroicons/react/16/solid";
-import { CodeIcon } from "@radix-ui/react-icons";
+import {
+  CodeIcon,
+  DashboardIcon,
+  PieChartIcon,
+  EnvelopeClosedIcon,
+  GitHubLogoIcon,
+  LinkedInLogoIcon,
+} from "@radix-ui/react-icons";
 import { getCollection } from "astro:content";
-
 const work = await getCollection("work");
 const workSorted = work.sort((a, b) => {
   return new Date(a.data.date).getTime() - new Date(b.data.date).getTime();
@@ -21,11 +26,11 @@ const workImageData = workSorted
 const isHomePage = Astro.url.pathname === "/";
 ---
 
-<section class="md:fixed bottom-4 left-8">
-  {
-    isHomePage ? (
+{
+  isHomePage ? (
+    <section class="hidden md:block px-2 pb-4 md:p-0 md:fixed md:bottom-4 md:left-8">
       <div>
-        <h2 data-animation-type="line">Work</h2>
+        {/* <h2 data-animation-type="line">Work</h2> */}
         <ul class="link-selection" id="work-list">
           {workSorted
             .filter((post) => post.data.published)
@@ -37,47 +42,178 @@ const isHomePage = Astro.url.pathname === "/";
                     class="work-link flex items-center gap-2 group-hover:text-[var(--color-accent)] transition-colors duration-300"
                     data-post-id={post.id}
                   >
-                    <CodeIcon className="group-hover:text-[var(--color-accent)] transition-colors duration-300" />
+                    {post.data.icon === "dashboard" ? (
+                      <DashboardIcon className="group-hover:text-[var(--color-accent)] transition-colors duration-300" />
+                    ) : post.data.icon === "pie-chart" ? (
+                      <PieChartIcon className="group-hover:text-[var(--color-accent)] transition-colors duration-300" />
+                    ) : (
+                      <CodeIcon className="group-hover:text-[var(--color-accent)] transition-colors duration-300" />
+                    )}
                     {post.data.title}
                   </a>
                 </h3>
               </li>
             ))}
+          <li id="connect-line" class="group work-item" />
+          <li class="group work-item">
+            <h3>
+              <a
+                href="/connect"
+                class="work-link flex items-center gap-2 group-hover:text-[var(--color-accent)] transition-colors duration-300"
+              >
+                <EnvelopeClosedIcon className="group-hover:text-[var(--color-accent)] transition-colors duration-300" />
+                Connect
+              </a>
+            </h3>
+          </li>
         </ul>
       </div>
-    ) : (
+    </section>
+  ) : (
+    <section class="hidden lg:block absolute bottom-0 left-0 px-2 pb-4 md:p-0 md:fixed md:bottom-4 md:left-8">
       <div>
-        <h2 data-animation-type="line">
-          <a
-            href="/"
-            class="hidden md:flex group items-center gap-2 hover:text-[var(--color-text)] transition-colors duration-300"
-          >
-            <ArrowUturnLeftIcon className="w-4 h-4 group-hover:text-[var(--color-text)] group-hover:-translate-x-0.5 transition-all duration-300" />{" "}
-            Back
-          </a>
-          <span class="md:hidden">Work</span>
-        </h2>
-        <ul class="link-selection md:hidden">
+        <ul class="link-selection">
           {workSorted
-            .filter(
-              (post) =>
-                post.data.published &&
-                `/${post.id}` !== Astro.url.pathname.replace(/\/$/, "")
-            )
-            .map((post) => (
-              <li class="group work-item">
-                <h3>
-                  <a
-                    href={`/${post.id}`}
-                    class="work-link flex items-center gap-2 group-hover:text-[var(--color-accent)] transition-colors duration-300"
-                    data-post-id={post.id}
-                  >
-                    <CodeIcon />
-                    {post.data.title}
-                  </a>
-                </h3>
-              </li>
-            ))}
+            .filter((post) => post.data.published)
+            .map((post) => {
+              const isCurrentPost =
+                `/${post.id}` === Astro.url.pathname.replace(/\/$/, "");
+              return (
+                <li class="group">
+                  <h3>
+                    {isCurrentPost ? (
+                      <div class="flex items-center gap-2 text-[var(--color-text)] py-1">
+                        {post.data.icon === "dashboard" ? (
+                          <DashboardIcon className="text-[var(--color-text)]" />
+                        ) : post.data.icon === "pie-chart" ? (
+                          <PieChartIcon className="text-[var(--color-text)]" />
+                        ) : (
+                          <CodeIcon className="text-[var(--color-text)]" />
+                        )}
+                        &nbsp;
+                      </div>
+                    ) : (
+                      <a
+                        href={`/${post.id}`}
+                        class="work-link flex items-center gap-2 group-hover:text-[var(--color-accent)] transition-colors duration-300"
+                      >
+                        {post.data.icon === "dashboard" ? (
+                          <DashboardIcon className="group-hover:text-[var(--color-accent)] transition-colors duration-300" />
+                        ) : post.data.icon === "pie-chart" ? (
+                          <PieChartIcon className="group-hover:text-[var(--color-accent)] transition-colors duration-300" />
+                        ) : (
+                          <CodeIcon className="group-hover:text-[var(--color-accent)] transition-colors duration-300" />
+                        )}
+                        &nbsp;
+                      </a>
+                    )}
+                  </h3>
+                </li>
+              );
+            })}
+          <li id="connect-line" class="group w-1/2" />
+          <li class="group">
+            <h3>
+              {Astro.url.pathname.replace(/\/$/, "") === "/connect" ? (
+                <div class="flex items-center gap-2 text-[var(--color-text)] py-1">
+                  <EnvelopeClosedIcon className="text-[var(--color-text)]" />
+                  &nbsp;
+                </div>
+              ) : (
+                <a
+                  href="/connect"
+                  class="work-link flex items-center gap-2 group-hover:text-[var(--color-accent)] transition-colors duration-300"
+                >
+                  <EnvelopeClosedIcon className="group-hover:text-[var(--color-accent)] transition-colors duration-300" />
+                  &nbsp;
+                </a>
+              )}
+            </h3>
+          </li>
+        </ul>
+      </div>
+    </section>
+  )
+}
+<section
+  class={`my-4 md:p-0 lg:hidden ${isHomePage ? "md:hidden absolute bottom-0 left-0 px-2" : ""} w-full`}
+>
+  <div>
+    <h2 data-animation-type="line">Work</h2>
+    <ul class="link-selection gap-2" id="work-list">
+      {
+        workSorted
+          .filter(
+            (post) =>
+              post.data.published &&
+              `/${post.id}` !== Astro.url.pathname.replace(/\/$/, "")
+          )
+          .map((post) => (
+            <li class="group work-item bg-[var(--color-accent)]/10 hover:bg-[var(--color-accent)]/5 pl-4 rounded-lg">
+              <h3>
+                <a
+                  href={`/${post.id}`}
+                  class="work-link flex items-center gap-2 group-hover:text-[var(--color-accent)] transition-colors duration-300"
+                >
+                  {post.data.icon === "dashboard" ? (
+                    <DashboardIcon className="group-hover:text-[var(--color-accent)] transition-colors duration-300" />
+                  ) : post.data.icon === "pie-chart" ? (
+                    <PieChartIcon className="group-hover:text-[var(--color-accent)] transition-colors duration-300" />
+                  ) : (
+                    <CodeIcon className="group-hover:text-[var(--color-accent)] transition-colors duration-300" />
+                  )}
+                  {post.data.title}
+                </a>
+              </h3>
+            </li>
+          ))
+      }
+    </ul>
+  </div>
+  {
+    Astro.url.pathname.replace(/\/$/, "") === "/connect" ? (
+      ""
+    ) : (
+      <div class="mt-8">
+        <h2 data-animation-type="line">Connect</h2>
+        <ul class="link-selection gap-2">
+          <li class="group work-item bg-[var(--color-accent)]/10 hover:bg-[var(--color-accent)]/5 pl-4 rounded-lg">
+            <h3>
+              <a
+                href="/connect"
+                class="work-link flex items-center gap-2 group-hover:text-[var(--color-accent)] transition-colors duration-300"
+              >
+                <EnvelopeClosedIcon className="group-hover:text-[var(--color-accent)] transition-colors duration-300" />
+                Message
+              </a>
+            </h3>
+          </li>
+          <li class="group work-item bg-[var(--color-accent)]/10 hover:bg-[var(--color-accent)]/5 pl-4 rounded-lg">
+            <h3>
+              <a
+                href="https://github.com/ephnagler"
+                class="work-link flex items-center gap-2 group-hover:text-[var(--color-accent)] transition-colors duration-300"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <GitHubLogoIcon className="group-hover:text-[var(--color-accent)] transition-colors duration-300" />
+                GitHub
+              </a>
+            </h3>
+          </li>
+          <li class="group work-item bg-[var(--color-accent)]/10 hover:bg-[var(--color-accent)]/5 pl-4 rounded-lg">
+            <h3>
+              <a
+                href="https://www.linkedin.com/in/ephriam-nagler/"
+                class="work-link flex items-center gap-2 group-hover:text-[var(--color-accent)] transition-colors duration-300"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <LinkedInLogoIcon className="group-hover:text-[var(--color-accent)] transition-colors duration-300" />
+                LinkedIn
+              </a>
+            </h3>
+          </li>
         </ul>
       </div>
     )
@@ -234,53 +370,35 @@ const isHomePage = Astro.url.pathname === "/";
       const htmlItem = item;
       const rect = htmlItem.getBoundingClientRect();
       const isInViewport = rect.top < viewportHeight && rect.bottom > 0;
+      const isHidden =
+        htmlItem.offsetParent === null ||
+        htmlItem.closest('[class*="hidden"]') !== null; // Check if element is hidden
 
-      if (isInViewport) {
-        // Element is in viewport - stagger animate it
+      if (isInViewport || isHidden) {
+        // Element is in viewport or hidden - stagger animate it
         setTimeout(() => {
           htmlItem.classList.add("animate-visible");
         }, index * 100); // Stagger by 100ms
       } else {
         // Element is not in viewport - set up for scroll animation
-        htmlItem.dataset.animationType = "content";
+        // Don't set data-animation-type to avoid conflicts with unified system
       }
     });
 
-    // Set up dedicated observer for work items not in initial viewport
-    const observerOptions = {
-      threshold: 0.3,
-      rootMargin: "0px 0px -50px 0px",
-    };
-
-    const workObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const element = entry.target;
-          // Cache work items array for better performance
-          const allWorkItems = document.querySelectorAll(".work-item");
-          const index = Array.from(allWorkItems).indexOf(element);
-
-          // Stagger the animation based on index
-          setTimeout(() => {
-            element.classList.add("animate-visible");
-          }, index * 100);
-
-          workObserver.unobserve(element);
-        }
-      });
-    }, observerOptions);
-
-    // Observe work items that need scroll animation (optimized loop)
-    for (let i = 0; i < workItems.length; i++) {
-      const item = workItems[i];
-      const rect = item.getBoundingClientRect();
+    // Use the unified animation system for elements not in viewport
+    workItems.forEach((item) => {
+      const htmlItem = item;
+      const rect = htmlItem.getBoundingClientRect();
       const isInViewport = rect.top < viewportHeight && rect.bottom > 0;
+      const isHidden =
+        htmlItem.offsetParent === null ||
+        htmlItem.closest('[class*="hidden"]') !== null;
 
-      // Only observe elements not in initial viewport
-      if (!isInViewport) {
-        workObserver.observe(item);
+      if (!isInViewport && !isHidden) {
+        // Let the unified system handle this element
+        htmlItem.dataset.animationType = "content";
       }
-    }
+    });
 
     // Safety check: if items are in viewport but not animated after 1 second, force animate them
     setTimeout(() => {
