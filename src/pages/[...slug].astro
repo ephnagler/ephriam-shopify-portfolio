@@ -92,15 +92,13 @@ const { Content } = await render(post);
         const isInViewport = rect.top < viewportHeight && rect.bottom > 0;
 
         if (isInViewport) {
-          // Element is in viewport - stagger animate it
-          setTimeout(() => {
-            htmlElement.classList.add("animate-visible");
+          // Element is in viewport - animate immediately
+          htmlElement.classList.add("animate-visible");
 
-            // If this is an h2 element, trigger line animation immediately
-            if (htmlElement.tagName === "H2") {
-              htmlElement.classList.add("animate-line");
-            }
-          }, index * 150); // Start after image, then stagger by 150ms
+          // If this is an h2 element, trigger line animation immediately
+          if (htmlElement.tagName === "H2") {
+            htmlElement.classList.add("animate-line");
+          }
         } else {
           // Element is not in viewport - set up for intersection observer
           htmlElement.dataset.animationType = "content";

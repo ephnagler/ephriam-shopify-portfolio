@@ -57,6 +57,7 @@ const groupedText = groupTextForLigatures(text);
   // State to track if this is the initial page load
   let isInitialLoad = true;
   let hasAnimatedOnMobile = false;
+  let hasAnimatedOnMd = false;
   let isAnimating = false;
 
   function calculateOptimalFontSize(element: HTMLElement) {
@@ -186,10 +187,12 @@ const groupedText = groupTextForLigatures(text);
     if (isAnimating) return; // Prevent multiple simultaneous animations
 
     const chars = document.querySelectorAll(".jumbo-char");
-    const isMobile = window.innerWidth < 768;
+    const width = window.innerWidth;
+    const isMobile = width < 768;
+    const isMd = width >= 768 && width < 1024;
 
-    // On mobile, only animate on initial page load
-    if (isMobile && hasAnimatedOnMobile) {
+    // On mobile and md, only animate on initial page load
+    if ((isMobile && hasAnimatedOnMobile) || (isMd && hasAnimatedOnMd)) {
       // Reset animation state for mobile - show immediately
       chars.forEach((char) => {
         (char as HTMLElement).style.animationDelay = "0s";
@@ -202,13 +205,16 @@ const groupedText = groupTextForLigatures(text);
     isAnimating = true;
 
     chars.forEach((char, index) => {
-      const delay = isMobile ? index * 0.08 : index * 0.035;
+      const delay = isMobile || isMd ? index * 0.08 : index * 0.035;
       (char as HTMLElement).style.animationDelay = `${delay}s`;
     });
 
-    // Mark mobile as animated after first time
+    // Mark mobile/md as animated after first time
     if (isMobile) {
       hasAnimatedOnMobile = true;
+    }
+    if (isMd) {
+      hasAnimatedOnMd = true;
     }
 
     // Reset animation flag after animation completes
@@ -262,7 +268,6 @@ const groupedText = groupTextForLigatures(text);
     .jumbo-char {
       opacity: 0;
       transform: translate3d(-10px, 0, 0);
-      scale: 0.95;
       animation: charFadeIn 0.4s ease-out forwards;
       will-change: opacity, transform;
     }
@@ -272,7 +277,6 @@ const groupedText = groupTextForLigatures(text);
     to {
       opacity: 1;
       transform: translateX(0);
-      scale: 1;
     }
   }
 

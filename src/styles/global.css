@@ -139,7 +139,7 @@
   .work-container h1::after {
     @apply hidden;
     content: "";
-    @apply block h-1 w-full xl:max-w-5xl lg:w-[70%] mx-auto bg-[var(--color-accent)] my-2 lg:mt-8 origin-left scale-x-0 transition-transform duration-800 ease-out;
+    @apply block h-0.5 md:h-0.75 w-full xl:max-w-5xl lg:w-[70%] mx-auto bg-[var(--color-accent)] my-2 lg:mt-8 origin-left scale-x-0 transition-transform duration-800 ease-out;
   }
   .work-container h1.animate-line::after {
     @apply scale-x-100;

@@ -375,10 +375,8 @@ const isHomePage = Astro.url.pathname === "/";
         htmlItem.closest('[class*="hidden"]') !== null; // Check if element is hidden
 
       if (isInViewport || isHidden) {
-        // Element is in viewport or hidden - stagger animate it
-        setTimeout(() => {
-          htmlItem.classList.add("animate-visible");
-        }, index * 100); // Stagger by 100ms
+        // If already visible (or hidden due to responsive state), animate immediately
+        htmlItem.classList.add("animate-visible");
       } else {
         // Element is not in viewport - set up for scroll animation
         // Don't set data-animation-type to avoid conflicts with unified system
@@ -400,7 +398,7 @@ const isHomePage = Astro.url.pathname === "/";
       }
     });
 
-    // Safety check: if items are in viewport but not animated after 1 second, force animate them
+    // Safety check: if items are in viewport but not animated after 1 second, force animate immediately
     setTimeout(() => {
       const unanimatedItems = document.querySelectorAll(
         ".work-item:not(.animate-visible)"
@@ -413,9 +411,7 @@ const isHomePage = Astro.url.pathname === "/";
 
         // Only force animate if the item is actually in the viewport
         if (isInViewport) {
-          setTimeout(() => {
-            item.classList.add("animate-visible");
-          }, index * 100);
+          item.classList.add("animate-visible");
         }
       });
     }, 1000);
